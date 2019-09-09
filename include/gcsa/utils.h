@@ -38,8 +38,8 @@
 // FIXME Later: Get rid of OpenMP.
 #include <omp.h>
 
-// Parallel sorting is only available with GCC.
-#if (defined(__GNUC__) && !defined(__clang__))
+// Parallel sorting is only available with GNU libstdc++.
+#if (defined(__GLIBCXX__))
 #include <parallel/algorithm>
 #endif
 
