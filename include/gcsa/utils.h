@@ -39,8 +39,9 @@
 #include <omp.h>
 
 // Parallel sorting is only available with GNU libstdc++.
-#if (defined(__GLIBCXX__))
+#if defined(__GLIBCXX__)
 #include <parallel/algorithm>
+#define GCSA2_PARALLEL_SORT
 #endif
 
 namespace gcsa
@@ -272,7 +273,7 @@ template<class Iterator, class Comparator>
 void
 parallelQuickSort(Iterator first, Iterator last, const Comparator& comp)
 {
-#if (defined(__GNUC__) && !defined(__clang__))
+#if defined(GCSA2_PARALLEL_SORT)
   int nested = omp_get_nested();
   omp_set_nested(1);
   __gnu_parallel::sort(first, last, comp, __gnu_parallel::balanced_quicksort_tag());
@@ -286,7 +287,7 @@ template<class Iterator>
 void
 parallelQuickSort(Iterator first, Iterator last)
 {
-#if (defined(__GNUC__) && !defined(__clang__))
+#if defined(GCSA2_PARALLEL_SORT)
   int nested = omp_get_nested();
   omp_set_nested(1);
   __gnu_parallel::sort(first, last, __gnu_parallel::balanced_quicksort_tag());
@@ -300,7 +301,7 @@ template<class Iterator, class Comparator>
 void
 parallelMergeSort(Iterator first, Iterator last, const Comparator& comp)
 {
-#if (defined(__GNUC__) && !defined(__clang__))
+#if defined(GCSA2_PARALLEL_SORT)
   __gnu_parallel::sort(first, last, comp, __gnu_parallel::multiway_mergesort_tag());
 #else
   std::sort(first, last, comp);
@@ -311,7 +312,7 @@ template<class Iterator>
 void
 parallelMergeSort(Iterator first, Iterator last)
 {
-#if (defined(__GNUC__) && !defined(__clang__))
+#if defined(GCSA2_PARALLEL_SORT)
   __gnu_parallel::sort(first, last, __gnu_parallel::multiway_mergesort_tag());
 #else
   std::sort(first, last);
@@ -322,7 +323,7 @@ template<class Iterator, class Comparator>
 void
 sequentialSort(Iterator first, Iterator last, const Comparator& comp)
 {
-#if (defined(__GNUC__) && !defined(__clang__))
+#if defined(GCSA2_PARALLEL_SORT)
   __gnu_parallel::sort(first, last, comp, __gnu_parallel::sequential_tag());
 #else
   std::sort(first, last, comp);
@@ -333,7 +334,7 @@ template<class Iterator>
 void
 sequentialSort(Iterator first, Iterator last)
 {
-#if (defined(__GNUC__) && !defined(__clang__))
+#if defined(GCSA2_PARALLEL_SORT)
   __gnu_parallel::sort(first, last, __gnu_parallel::sequential_tag());
 #else
   std::sort(first, last);
@@ -437,5 +438,7 @@ LF(const BWTType& bwt, const AlphabetType& alpha, range_type range, comp_type co
 //------------------------------------------------------------------------------
 
 } // namespace gcsa
+
+#undef GCSA2_PARALLEL_SORT
 
 #endif // GCSA_UTILS_H
